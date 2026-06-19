@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMDA | Plateforme ESS</title>
+    <!-- Icônes FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-blue: #3b59ff;   /* Le bleu royal de votre logo */
+            --teal-ess: #0096aa;       /* Le turquoise du slogan */
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Gestion de l'orientation Arabe (RTL) */
+        [dir="rtl"] {
+            text-align: right;
+        }
+        [dir="rtl"] .back-btn i {
+            transform: rotate(180deg);
+        }
+
+        /* Sélecteur de Langue Flottant */
+        .language-picker {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            background: var(--white);
+            padding: 5px 10px;
+            border-radius: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+        }
+        [dir="rtl"] .language-picker {
+            right: auto;
+            left: 20px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 5px 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .lang-btn.active, .lang-btn:hover {
+            color: var(--primary-blue);
+            background-color: #eff6ff;
+            border-radius: 20px;
+        }
+
+        /* Structure Générale des Écrans (Pages) */
+        .app-screen {
+            display: none;
+            min-height: 100vh;
+            width: 100vw;
+            padding: 40px 20px;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .app-screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================
+           ÉCRAN 1 : ACCUEIL & PORTAIL D'ENTRÉE
+        ========================================== */
+        #screen-home {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 80px;
+        }
+
+        .logo-container {
+            max-width: 500px;
+            width: 90%;
+            margin-bottom: 30px;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .slogan {
+            font-size: 1.4rem;
+            color: var(--teal-ess);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 50px;
+            max-width: 700px;
+            padding: 0 20px;
+        }
+
+        .portal-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .menu-card {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            padding: 30px 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-card i {
+            font-size: 2.5rem;
+            color: var(--primary-blue);
+            transition: var(--transition);
+        }
+
+        .menu-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-blue);
+            background-color: #fdfdfd;
+        }
+
+        .menu-card:hover i {
+            color: var(--teal-ess);
+        }
+
+        /* ==========================================
+           STRUCTURE DES PAGES RUBRIQUES INDÉPENDANTES
+        ========================================== */
+        .screen-header {
+            max-width: 1100px;
+            margin: 0 auto 40px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 20px;
+        }
+
+        .header-logo {
+            max-width: 150px;
+        }
+
+        .back-btn {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .page-intro {
+            font-size: 1.2rem;
+            color: var(--teal-ess);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .content-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .content-card h3 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-left: 4px solid var(--teal-ess);
+            padding-left: 12px;
+        }
+        [dir="rtl"] .content-card h3 {
+            border-left: none;
+            border-right: 4px solid var(--teal-ess);
+            padding-left: 0;
+            padding-right: 12px;
+        }
+
+        /* Tableaux de données des rubriques */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th {
+            background-color: #eff6ff;
+            color: var(--primary-blue);
+            text-align: left;
+            padding: 12px;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        [dir="rtl"] .data-table th {
+            text-align: right;
+        }
+
+        .data-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-dark);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .portal-menu {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 550px) {
+            .portal-menu {
+                grid-template-columns: 1fr;
+            }
+            .screen-header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SÉLECTEUR DE LANGUE FLOTTANT -->
+    <div class="language-picker">
+        <button class="lang-btn active" onclick="changeLanguage('fr')">FR</button>
+        <button class="lang-btn" onclick="changeLanguage('ar')">عربي</button>
+        <button class="lang-btn" onclick="changeLanguage('zgh')">ⵜⴰⵎⴰⵣⵉⵖⵜ</button>
+    </div>
+
+    <!-- ========================================================
+       ÉCRAN 1 : PAGE D'ACCUEIL AVEC LOGO, SLOGAN ET PORTAIL
+    ========================================================= -->
+    <div id="screen-home" class="app-screen active">
+        <div class="logo-container">
+            <!-- Inclusion de l'image de votre logo officiel -->
+            <img src="Logo.png" alt="AMDA Logo">
+        </div>
+        <div class="slogan" id="txt-slogan">
+            L'espace d'émergence de tout ce qui est ESS (Économie Sociale et Solidaire)
+        </div>
+        
+        <div class="portal-menu">
+            <div class="menu-card" onclick="navigateTo('screen-dashboard')">
+                <i class="fas fa-chart-pie"></i>
+                <h3 id="menu-dash">Tableau de bord</h3>
+            </div>
+            <div class="menu-card" onclick="navigateTo('screen-coop')">
+                <i class="fas fa-store"></i>
+                <h3 id="menu-coop">Coopératives</h3>
+            </div>
+            <div class="menu-card" onclick="navigateTo('screen-projects')">
+                <i class="fas fa-lightbulb"></i>
+                <h3 id="menu-proj">Projets ESS</h3>
+            </div>
+            <div class="menu-card" onclick="navigateTo('screen-club')">
+                <i class="fas fa-handshake"></i>
+                <h3 id="menu-club">AMDA Club</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+       ÉCRAN 2 : RUBRIQUE INDÉPENDANTE - TABLEAU DE BORD
+    ========================================================= -->
+    <div id="screen-dashboard" class="app-screen">
+        <div class="screen-header">
+            <img src="Logo.png" class="header-logo" alt="AMDA">
+            <button class="back-btn" onclick="navigateTo('screen-home')">
+                <i class="fas fa-arrow-left"></i> <span class="lbl-back">Retour</span>
+            </button>
+        </div>
+        <div class="container">
+            <h2 class="page-title" id="dash-title">Espace d'Émergence & Performance</h2>
+            <div class="page-intro" id="dash-intro">Suivi des indicateurs clés de l'économie sociale et solidaire.</div>
+            
+            <div class="content-card">
+                <h3 id="dash-card-title">Vue d'ensemble de l'impact</h3>
+                <p id="dash-card-p">Cet espace centralise l'évolution des projets incubés, le volume d'activité des coopératives partenaires et les métriques d'impact social sur les territoires.</p>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th id="th-ind">Indicateur</th>
+                            <th id="th-reg">Région</th>
+                            <th id="th-val">Valeur Actuelle</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Projets incubés</td>
+                            <td>National</td>
+                            <td><span class="badge">42 Structures</span></td>
+                        </tr>
+                        <tr>
+                            <td>Emplois solidaires créés</td>
+                            <td>Souss-Massa</td>
+                            <td><span class="badge">185 Postes</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+       ÉCRAN 3 : RUBRIQUE INDÉPENDANTE - COOPÉRATIVES
+    ========================================================= -->
+    <div id="screen-coop" class="app-screen">
+        <div class="screen-header">
+            <img src="Logo.png" class="header-logo" alt="AMDA">
+            <button class="back-btn" onclick="navigateTo('screen-home')">
+                <i class="fas fa-arrow-left"></i> <span class="lbl-back">Retour</span>
+            </button>
+        </div>
+        <div class="container">
+            <h2 class="page-title" id="coop-title">Registre des Coopératives</h2>
+            <div class="page-intro" id="coop-intro">Traçabilité complète et transparence du producteur au consommateur.</div>
+            
+            <div class="content-card">
+                <h3 id="coop-card-title">Nos Producteurs Engagés</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th id="th-name">Nom</th>
+                            <th id="th-spec">Spécialité</th>
+                            <th id="th-loc">Localisation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Coopérative Aloa Biben</td>
+                            <td>Huile d'Argan Premium</td>
+                            <td>Essaouira</td>
+                        </tr>
+                        <tr>
+                            <td>Coopérative BioAtlas</td>
+                            <td>Mélasse de Caroube</td>
+                            <td>Midelt</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+       ÉCRAN 4 : RUBRIQUE INDÉPENDANTE - PROJETS ESS
+    ========================================================= -->
+    <div id="screen-projects" class="app-screen">
+        <div class="screen-header">
+            <img src="Logo.png" class="header-logo" alt="AMDA">
+            <button class="back-btn" onclick="navigateTo('screen-home')">
+                <i class="fas fa-arrow-left"></i> <span class="lbl-back">Retour</span>
+            </button>
+        </div>
+        <div class="container">
+            <h2 class="page-title" id="proj-title">Laboratoire d'Émergence Sociale</h2>
+            <div class="page-intro" id="proj-intro">Accompagnement, incubation et recherche-action en économie solidaire.</div>
+            <div class="content-card">
+                <h3 id="proj-card-title">Programmes d'incubation actuels</h3>
+                <p id="proj-card-p">Déploiement de cadres collaboratifs pour renforcer l'intelligence collective et la gouvernance démocratique des structures rurales.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+       ÉCRAN 5 : RUBRIQUE INDÉPENDANTE - AMDA CLUB
+    ========================================================= -->
+    <div id="screen-club" class="app-screen">
+        <div class="screen-header">
+            <img src="Logo.png" class="header-logo" alt="AMDA">
+            <button class="back-btn" onclick="navigateTo('screen-home')">
+                <i class="fas fa-arrow-left"></i> <span class="lbl-back">Retour</span>
+            </button>
+        </div>
+        <div class="container">
+            <h2 class="page-title" id="club-title">L'Écosystème des Membres Engagés</h2>
+            <div class="page-intro" id="club-intro">L'abonnement solidaire pour maximiser l'autonomie financière des producteurs.</div>
+            <div class="content-card">
+                <h3 id="club-card-title">Avantages du Club AMDA</h3>
+                <p id="club-card-p">En éliminant les intermédiaires spéculatifs, l'adhésion garantit un prix juste directement reversé aux coopératives et donne accès à un rapport d'impact trimestriel transparent.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================
+       LOGIQUE JAVASCRIPT : ROUTING SPA & TRADUCTION TRI-LANGUE
+    ========================================================= -->
+    <script>
+        // 1. Dictionnaire de traduction (Français, Arabe, Tamazight)
+        const translations = {
+            fr: {
+                dir: 'ltr',
+                slogan: "L'espace d'émergence de tout ce qui est ESS (Économie Sociale et Solidaire)",
+                back: "Retour",
+                menuDash: "Tableau de bord",
+                menuCoop: "Coopératives",
+                menuProj: "Projets ESS",
+                menuClub: "AMDA Club",
+                dashTitle: "Espace d'Émergence & Performance",
+                dashIntro: "Suivi des indicateurs clés de l'économie sociale et solidaire.",
+                dashCardTitle: "Vue d'ensemble de l'impact",
+                dashCardP: "Cet espace centralise l'évolution des projets incubés, le volume d'activité des coopératives partenaires et les métriques d'impact social sur les territoires.",
+                thInd: "Indicateur", thReg: "Région", thVal: "Valeur Actuelle",
+                coopTitle: "Registre des Coopératives",
+                coopIntro: "Traçabilité complète et transparence du producteur au consommateur.",
+                coopCardTitle: "Nos Producteurs Engagés",
+                thName: "Nom", thSpec: "Spécialité", thLoc: "Localisation",
+                projTitle: "Laboratoire d'Émergence Sociale",
+                projIntro: "Accompagnement, incubation et recherche-action en économie solidaire.",
+                projCardTitle: "Programmes d'incubation actuels",
+                projCardP: "Déploiement de cadres collaboratifs pour renforcer l'intelligence collective et la gouvernance démocratique des structures rurales.",
+                clubTitle: "L'Écosystème des Membres Engagés",
+                clubIntro: "L'abonnement solidaire pour maximiser l'autonomie financière des producteurs.",
+                clubCardTitle: "Avantages du Club AMDA",
+                clubCardP: "En éliminant les intermédiaires spéculatifs, l'adhésion garantit un prix juste directement reversé aux coopératives et donne accès à un rapport d'impact trimestriel transparent."
+            },
+            ar: {
+                dir: 'rtl',
+                slogan: "فضاء بروز كل ما يتعلق بالاقتصاد الاجتماعي والتضامني (ESS)",
+                back: "رجوع",
+                menuDash: "لوحة القيادة",
+                menuCoop: "التعاونيات",
+                menuProj: "مشاريع ESS",
+                menuClub: "نادي أمدا",
+                dashTitle: "فضاء البروز والأداء",
+                dashIntro: "متابعة المؤشرات الرئيسية للاقتصاد الاجتماعي والتضامني.",
+                dashCardTitle: "نظرة عامة على الأثر الاجتماعي",
+                dashCardP: "يمركز هذا الفضاء تطور المشاريع المحتضنة، وحجم أنشطة التعاونيات الشريكة، ومقاييس الأثر الاجتماعي في المجالات الترابية.",
+                thInd: "المؤشر", thReg: "الجهة", thVal: "القيمة الحالية",
+                coopTitle: "سجل التعاونيات",
+                coopIntro: "تتبع كامل وشفافية مطلقة من المنتج إلى المستهلك.",
+                coopCardTitle: "منتجونا الملتزمون",
+                thName: "الاسم", thSpec: "التخصص", thLoc: "الموقع",
+                projTitle: "مختبر البروز الاجتماعي",
+                projIntro: "المواكبة، الاحتضان والبحث العملي في الاقتصاد التضامني.",
+                projCardTitle: "برامج الاحتضان الحالية",
+                projCardP: "نشر أطر عمل تعاونية لتعزيز الذكاء الجماعي والحكامة الديمقراطية للمؤسسات القروية.",
+                clubTitle: "منظومة الأعضاء الملتزمين",
+                clubIntro: "الاشتراك التضامني لتعزيز الاستقلال المالي للمنتجين.",
+                clubCardTitle: "مزايا نادي أمدا (AMDA Club)",
+                clubCardP: "من خلال إلغاء الوسطاء، يضمن الاشتراك عائداً عادلاً يذهب مباشرة للتعاونيات مع إمكانية الوصول إلى تقرير أثر ربع سنوي شفاف."
+            },
+            zgh: {
+                dir: 'ltr',
+                slogan: "ⴰⴷⵖⴰⵔ ⵏ ⵓⵙuman ⵏ ⴽⵓⵍⵍⵓ ⵎⴰ ⵉⵣⴷⵉⵏ ⴷ ⵜⴷⴰⵎⵙⴰ ⵜⴰⵏⴰⵎⵓⵏⵜ ⵜⴰⵎⵢⴰⵡⴰⵙⵜ (ESS)",
+                back: "ⴰⵖⵓⵍ",
+                menuDash: "ⵜⴰⴼⵍⵡⵉⵜ ⵏ ⵓⵙⵡⵓⴷⴷⵓ",
+                menuCoop: "ⵜⵉⵎⵢⴰⵡⴰⵙⵉⵏ",
+                menuProj: "ⵉⵙⵏⴼⴰⵔⵏ ⵏ ESS",
+                menuClub: "ⴰⵙⴰⵢⵔⵓ ⵏ AMDA",
+                dashTitle: "ⴰⴷⵖⴰⵔ ⵏ ⵓⵙuman ⴷ ⵓⵎⵓⵔⵙ",
+                dashIntro: "ⴰⴹⴼⵓⵕ ⵏ ⵉⵎⴰⵜⴰⵔⵏ ⵉⴷⵙⵍⴰⵏ ⵏ ⵜⴷⴰⵎⵙⴰ ⵜⴰⵏⴰⵎⵓⵏⵜ ⵜⴰⵎⵢⴰⵡⴰⵙⵜ.",
+                dashCardTitle: "ⵜⴰⵏⵏⴰⵢⵜ ⴰⴽⴽⵯ ⵅⴼ ⵜⵡⵓⵔⵉ",
+                dashCardP: "ⴰⴷⵖⴰⵔ ⴰⴷ ⵉⵙⵎⵓⵏ ⴰⴽⴽⵯ ⵉⵙⵏⴼⴰⵔⵏ ⵏⵏⴰ ⵏⵜⵜⴰⵡⵙ, ⴷ ⵜⵡⵓⵔⵉ ⵏ ⵜⵎⵢⴰⵡⴰⵙⵉⵏ ⴷ ⵓⵙⵖⵍ ⵏ ⵜⵡⵓⵔⵉ ⵜⴰⵏⴰⵎⵓⵏⵜ ⴳ ⵜⵎⵏⴰⴹⵉⵏ.",
+                thInd: "ⴰⵎⴰⵜⴰⵔ", thReg: "ⵜⴰⵎⵏⴰⴹⵜ", thVal: "ⴰⵜⵉⴳ ⵏ ⵓⵔⵓ",
+                coopTitle: "ⴰⴼⵔⵔⴰⵏ ⵏ ⵜⵎⵢⴰⵡⴰⵙⵉⵏ",
+                coopIntro: "ⴰⴹⴼⵓⵕ ⵉⵎⴷⵏ ⴷ ⵜⴼⴰⵡⵜ ⵙⴳ ⵓⵎⴼⴰⵔⵙ ⴰⵔ ⴰⵎⵙⴰⵖ.",
+                coopCardTitle: "ⵉⵎⴼⴰⵔⵙⵏ ⵏⵏⵖ",
+                thName: "ⵉⵙⵎ", thSpec: "ⵜⴰⵥⵍⴰⵢⵜ", thLoc: "ⴰⴷⵖⴰⵔ",
+                projTitle: "ⴰⵙⴼⵙⵔ ⵏ ⵓⵙuman ⴰⵏⴰⵎⵓⵏ",
+                projIntro: "ⴰⵙⵏⴰⵍ, ⴰⵃⵟⵟⵓ ⴷ ⵓⵔⵣⵣⵓ ⴳ ⵜⴷⴰⵎⵙⴰ ⵜⴰⵎⵢⴰⵡⴰⵙⵜ.",
+                projCardTitle: "ⵉⵙⵏⴼⴰⵔⵏ ⵏ ⵓⵃⵟⵟⵓ ⵏ ⵓⵔⵓ",
+                projCardP: "ⴰⵙⵔⵓⵙ ⵏ ⵜⵡⵓⵔⵉⵡⵉⵏ ⵜⵉⵎⵢⴰⵡⴰⵙⵉⵏ ⵙ ⵓⵙⴷⵓⵙ ⵏ ⵓⵏⵍⵍⵉ ⴰⴽⵍⵍⴰⵏ ⴷ ⵓⵙⵡⵓⴷⴷⵓ ⴰⴷⵉⵎⵓⵇⵔⴰⵟⵉ.",
+                clubTitle: "ⴰⴳⵔⴰⵡ ⵏ ⵉⴳⵎⴰⵎⵏ ⵉⵎⵙⴰⵙⴰⵏ",
+                clubIntro: "ⴰⵣⵎⵎⴻⵎ ⴰⵎⵢⴰⵡⴰⵙ ⵙ ⵓⵙⴷⵓⵙ ⵏ ⵜⴷⴰⵎⵙⴰ ⵜⴰⵏⵉⵎⴰⵏⵜ ⵏ ⵉⵎⴼⴰⵔⵙⵏ.",
+                clubCardTitle: "ⵉⵙⵓⵔⴰⵔ ⵏ ⵓⵙⴰⵢⵔⵓ ⵏ AMDA",
+                clubCardP: "ⵙ ⵓⴽⴽⵙ ⵏ ⵉⵎⵙⵙⵓⵖⵣⵣⴰ, ⴰⵣⵎⵎⴻⵎ ⴰⴷ ⵉⴳⴰ ⵜⵓⵎⵔⵉⵏ ⵉⴼⵓⵍⴽⵉⵏ ⵉ ⵜⵎⵢⴰⵡⴰⵙⵉⵏ ⴷ ⵓⴼⵙⵔ ⵏ ⵜⴼⴰⵡⵜ ⴽⵓ ⴽⵕⴰⴹ ⵢⵉⵔⵏ."
+            }
+        };
+
+        // 2. Gestion de la Navigation (Changement de Page Écran)
+        function navigateTo(screenId) {
+            // Cacher toutes les pages actives
+            document.querySelectorAll('.app-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            // Afficher l'écran demandé
+            document.getElementById(screenId).classList.add('active');
+            // Remonter automatiquement la page vers le haut
+            window.scrollTo(0, 0);
+        }
+
+        // 3. Gestion de la Traduction Dynamique
+        function changeLanguage(lang) {
+            const data = translations[lang];
+            
+            // Appliquer la direction du texte (RTL ou LTR)
+            document.documentElement.setAttribute('dir', data.dir);
+
+            // Mettre à jour la classe active sur les boutons linguistiques
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Traduction des éléments d'Accueil
+            document.getElementById('txt-slogan').innerText = data.slogan;
+            document.getElementById('menu-dash').innerText = data.menuDash;
+            document.getElementById('menu-coop').innerText = data.menuCoop;
+            document.getElementById('menu-proj').innerText = data.menuProj;
+            document.getElementById('menu-club').innerText = data.menuClub;
+
+            // Traduction des étiquettes communes
+            document.querySelectorAll('.lbl-back').forEach(el => el.innerText = data.back);
+
+            // Écran Tableau de bord
+            document.getElementById('dash-title').innerText = data.dashTitle;
+            document.getElementById('dash-intro').innerText = data.dashIntro;
+            document.getElementById('dash-card-title').innerText = data.dashCardTitle;
+            document.getElementById('dash-card-p').innerText = data.dashCardP;
+            document.getElementById('th-ind').innerText = data.thInd;
+            document.getElementById('th-reg').innerText = data.thReg;
+            document.getElementById('th-val').innerText = data.thVal;
+
+            // Écran Coopératives
+            document.getElementById('coop-title').innerText = data.coopTitle;
+            document.getElementById('coop-intro').innerText = data.coopIntro;
+            document.getElementById('coop-card-title').innerText = data.coopCardTitle;
+            document.getElementById('th-name').innerText = data.thName;
+            document.getElementById('th-spec').innerText = data.thSpec;
+            document.getElementById('th-loc').innerText = data.thLoc;
+
+            // Écran Projets ESS
+            document.getElementById('proj-title').innerText = data.projTitle;
+            document.getElementById('proj-intro').innerText = data.projIntro;
+            document.getElementById('proj-card-title').innerText = data.projCardTitle;
+            document.getElementById('proj-card-p').innerText = data.projCardP;
+
+            // Écran Club AMDA
+            document.getElementById('club-title').innerText = data.clubTitle;
+            document.getElementById('club-intro').innerText = data.clubIntro;
+            document.getElementById('club-card-title').innerText = data.clubCardTitle;
+            document.getElementById('club-card-p').innerText = data.clubCardP;
+        }
+    </script>
+</body>
+</html>
